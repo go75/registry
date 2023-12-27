@@ -29,6 +29,7 @@ func New(heartBeatAttempCount int, heartBeatAttempDuration, heartBeatCheckDurati
 		heartBeatAttempCount:    heartBeatAttempCount,
 		heartBeatAttempDuration: heartBeatAttempDuration,
 		heartBeatCheckDuration:  heartBeatCheckDuration,
+		routeTable: make(route.RouteTable, 0),
 	}
 }
 
@@ -68,13 +69,8 @@ func (s *RegistryService) Run() error {
 			return
 		}
 
-		_, err = w.Write(data)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
 		w.WriteHeader(http.StatusOK)
+		w.Write(data)
 	})
 
 	return http.ListenAndServe(config.SERVICE_ADDR, nil)
